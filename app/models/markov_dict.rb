@@ -13,15 +13,16 @@ class MarkovDict
   #
   def initialize(order: 1)
     @order = order
-    @words_for = Hash.new
-    @start_words = Array.new
+    @words_for = {}
+    @start_words = []
   end
 
   def process_text(text)
     cleaned_text = clean_text(text)
     seps = /([.!?]+)/
-    sentences = text.split seps
-    sentences.each_slice(2) { |s,t| process_sentence(s.strip,t) }
+    sentences = cleaned_text.split seps
+    # puts "#{cleaned_text}\n\t#{sentences}"
+    sentences.each_slice(2) { |s, t| process_sentence(s.strip, t) }
   end
 
   # Processes a single sentence with terminator
@@ -34,18 +35,20 @@ class MarkovDict
   #
   def process_sentence(sentence, terminator)
     # Consider phrases/words/clauses separators when splitting
-    seps = "([,;:])"
+    seps = '([,;:\(\)])'
 
     # Split <sentence> into words
-    words = sentence.gsub(/[^#{seps}\w'\s]/, "").gsub(/(#{seps})\s+/, '\1').split(/\s+|#{seps}/)
+    words = sentence.gsub(/[^#{seps}\w'\s]/, '').gsub(/(#{seps})\s+/, '\1').split(/\s+|#{seps}/)
     return if words.size <= order
     words << terminator
+
+    # puts "\t#{sentence}\n\t\t #{words}"
 
     # Add <@order> start words to the list
     @start_words << words[0, @order]
 
     # Add the words to the frequency hash <words_for>
-    until words.size < @order + 1 do
+    until words.size < @order + 1
       (@words_for[words[0, @order]] ||= []) << words[@order]
       words.shift
     end
@@ -78,6 +81,8 @@ class MarkovDict
 
   # Clean text to remove shit
   def clean_text(text)
-    text # TODO
+    text = text.gsub(/(?:f|ht)tps?:\/[^\s]+/, '') # remove urls
+    text = text.sub('&amp;', '&')
+    text
   end
 end
