@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @lie.text %>
+</p>
+
+<p>
+  <strong>Model version:</strong>
+  <%= @lie.model_version %>
+</p>
+
+<p>
+  <strong>Model order:</strong>
+  <%= @lie.model_order %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @lie.state %>
+</p>
+
+<%= link_to 'Edit', edit_ly_path(@lie) %> |
+<%= link_to 'Back', lies_path %>

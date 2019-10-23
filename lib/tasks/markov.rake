@@ -29,3 +29,6 @@ namespace :markov do
   end
 
 end
+
+# rails g scaffold Truth text:text sent:datetime tweet_id:string retweet_count:integer state:string
+# rails g scaffold Lie text:text model_version:string model_order:integer state:string 

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @truth.text %>
+</p>
+
+<p>
+  <strong>Sent:</strong>
+  <%= @truth.sent %>
+</p>
+
+<p>
+  <strong>Tweet:</strong>
+  <%= @truth.tweet_id %>
+</p>
+
+<p>
+  <strong>Retweet count:</strong>
+  <%= @truth.retweet_count %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @truth.state %>
+</p>
+
+<%= link_to 'Edit', edit_truth_path(@truth) %> |
+<%= link_to 'Back', truths_path %>

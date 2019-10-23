@@ -1,0 +1,42 @@
+<%= form_with(model: truth, local: true) do |form| %>
+  <% if truth.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(truth.errors.count, "error") %> prohibited this truth from being saved:</h2>
+
+      <ul>
+      <% truth.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :text %>
+    <%= form.text_area :text %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sent %>
+    <%= form.datetime_select :sent %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tweet_id %>
+    <%= form.text_field :tweet_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :retweet_count %>
+    <%= form.number_field :retweet_count %>
+  </div>
+
+  <div class="field">
+    <%= form.label :state %>
+    <%= form.text_field :state %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
