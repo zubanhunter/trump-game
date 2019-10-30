@@ -4,11 +4,24 @@ namespace :markov do
   desc 'Build the MarkovGen on a corpus of Trump tweets and text'
   task build: :environment do
     puts 'Building models...'
-    markovDicts = {}
+    markov_dicts = {}
+    reference_texts = {}
+    orders = (1..5)
+    orders.each { |order| markov_dicts[order] = MarkovDict.new(order: order) }
 
-    3.times {|i| markovDicts[i+1] = build_dict(i+1) }
+    CSV.foreach('storage/tweets_1.csv', headers: true, quote_char:'<') do |row|
+      next if row['is_retweet'] == 'true'
+      orders.each { |order| markov_dicts[order].process_text(row['text'], row['id_str']) }
+      reference_texts[row['id_str']] = row['text']
+    end
 
-    trump = MarkovGen.new(markovDicts)
+    CSV.foreach('storage/tweets_2.csv', headers: true, quote_char:'<') do |row|
+      next if row['is_retweet'] == 'true'
+      orders.each { |order| markov_dicts[order].process_text(row['text'], row['id_str']) }
+      reference_texts[row['id_str']] = row['text']
+    end
+
+    trump = MarkovGen.new(markov_dicts, reference_texts)
 
     # write the model out
     File.open("trump.dump","wb") do |file|
@@ -16,19 +29,4 @@ namespace :markov do
     end
   end
 
-  def build_dict(order)
-    trump_d = nil
-    time = Benchmark.realtime do
-      trump_d = MarkovDict.new(order: order)
-      CSV.foreach('storage/tweets_1.csv', headers: true, quote_char:'<') do |row|
-        trump_d.process_text(row['text']) unless row['is_retweet'] == 'true'
-      end
-    end
-    puts "\tBuilt order: #{order} in time: #{time.round(2)} seconds"
-    trump_d
-  end
-
 end
-
-# rails g scaffold Truth text:text sent:datetime tweet_id:string retweet_count:integer state:string
-# rails g scaffold Lie text:text model_version:string model_order:integer state:string 

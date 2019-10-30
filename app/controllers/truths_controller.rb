@@ -1,10 +1,21 @@
 class TruthsController < ApplicationController
-  before_action :set_truth, only: [:show, :edit, :update, :destroy]
+  before_action :set_truth, only: [:show, :edit, :update, :destroy, :accept]
+
+  PAGE_SIZE = 20
 
   # GET /truths
   # GET /truths.json
   def index
-    @truths = Truth.all
+    @page = params[:page]&.to_i || 1
+    offset = (@page - 1) * PAGE_SIZE
+    @truths = Truth.where(state: 'ACCEPTED').limit(PAGE_SIZE).offset(offset)
+  end
+
+  # GET /truths/review
+  def review
+    @page = params[:page]&.to_i || 1
+    offset = (@page - 1) * PAGE_SIZE
+    @truths = Truth.where(state: 'REVIEW').limit(PAGE_SIZE).offset(offset)
   end
 
   # GET /truths/1
@@ -51,12 +62,17 @@ class TruthsController < ApplicationController
     end
   end
 
+  def accept
+    @truth.update(state: 'ACCEPTED')
+    redirect_to review_truths_url, notice: 'Truth was accepted.'
+  end
+
   # DELETE /truths/1
   # DELETE /truths/1.json
   def destroy
     @truth.destroy
     respond_to do |format|
-      format.html { redirect_to truths_url, notice: 'Truth was successfully destroyed.' }
+      format.html { redirect_to review_truths_url, notice: 'Truth was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

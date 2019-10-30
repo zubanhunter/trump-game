@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Truths</h1>
+<h1>Review Potential Truth Cards</h1>
 
 <table class="table">
   <thead>
@@ -16,13 +16,16 @@
       <tr>
         <td><%= truth.text %></td>
         <td><a href="https://www.twitter.com/statuses/<%= truth.tweet_id %>" target="_"><%= truth.retweet_count %></a></td>
-        <td><%= link_to 'Show', truth %></td>
+        <td><%= truth.state %></td>
         <td><%= link_to 'Edit', edit_truth_path(truth) %></td>
-        <td><%= link_to 'Reject', truth, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Accept', accept_truth_path(truth), method: :post %></td>
+        <td><%= link_to 'Reject', truth, method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<br>
+<%= link_to 'Next Page', review_truths_path(page: @page+1) %>
 
 <br>
-<%= link_to 'Next Page', truths_path(page: @page+1) %>
+<%= link_to 'View Accepted Truth Cards', truths_path %>

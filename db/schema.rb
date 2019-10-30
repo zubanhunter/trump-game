@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_23_190525) do
+ActiveRecord::Schema.define(version: 2019_10_28_030811) do
 
   create_table "lies", force: :cascade do |t|
     t.text "text"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_190525) do
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["state"], name: "index_truths_on_state"
   end
 
 end

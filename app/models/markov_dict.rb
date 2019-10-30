@@ -13,16 +13,17 @@ class MarkovDict
   #
   def initialize(order: 1)
     @order = order
-    @words_for = {}
+    @words_for = {} # mapping of [order words] => next word
+    @words_from = {} # Mapping of [order words] => id of text this phrase came from.
     @start_words = []
   end
 
-  def process_text(text)
+  def process_text(text, text_id)
     cleaned_text = clean_text(text)
     seps = /([.!?]+)/
     sentences = cleaned_text.split seps
     # puts "#{cleaned_text}\n\t#{sentences}"
-    sentences.each_slice(2) { |s, t| process_sentence(s.strip, t) }
+    sentences.each_slice(2) { |s, t| process_sentence(s.strip, t, text_id) }
   end
 
   # Processes a single sentence with terminator
@@ -33,7 +34,7 @@ class MarkovDict
   # @param [String] sentence to process
   # @param [Character] sentence terminator
   #
-  def process_sentence(sentence, terminator)
+  def process_sentence(sentence, terminator, text_id)
     # Consider phrases/words/clauses separators when splitting
     seps = '([,;:\(\)])'
 
@@ -50,6 +51,7 @@ class MarkovDict
     # Add the words to the frequency hash <words_for>
     until words.size < @order + 1
       (@words_for[words[0, @order]] ||= []) << words[@order]
+      (@words_from[words[0, @order]] ||= []) << text_id
       words.shift
     end
   end
@@ -66,6 +68,10 @@ class MarkovDict
   #
   def get(words)
     (@words_for[words] || []).sample
+  end
+
+  def get_references(words)
+    (@words_from[words] || [])
   end
 
   # Returns a list of words beginning a sentence seen in the source

@@ -1,6 +1,42 @@
-<h1>Editing LIe</h1>
+<h1>Editing Lie</h1>
 
-<%= render 'form', lie: @lie %>
+<%= form_with(model: @lie, local: true) do |form| %>
+  <% if @lie.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@lie.errors.count, "error") %> prohibited this lie from being saved:</h2>
+
+      <ul>
+      <% @lie.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :text %>
+    <%= form.text_area :text %>
+  </div>
+
+  <div class="field">
+    <%= form.label :model_version %>
+    <%= form.text_field :model_version, readonly: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :model_order %>
+    <%= form.number_field :model_order, readonly: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :state %>
+    <%= form.text_field :state, readonly: true %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
 
 <%= link_to 'Show', @lie %> |
 <%= link_to 'Back', lies_path %>

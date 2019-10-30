@@ -1,5 +1,59 @@
 <h1>New Lie</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-8">
+      <%= form_with(model: @lie, local: true) do |form| %>
+        <div class="form-group">
+          <%= form.label :text %>
+          <%= form.text_area :text, class: 'form-control', resize: 'none', rows: 5 %>
+        </div>
 
-<%= render 'form', lie: @lie %>
+        <div class="field">
+          <%= form.text_field :model_version, readonly: true, hidden: true %>
+        </div>
 
-<%= link_to 'Back', lies_path %>
+        <div class="field">
+          <%= form.number_field :model_order, readonly: true, hidden: true %>
+        </div>
+
+        <div>
+          <%= form.submit class:'btn-primary' %>
+        </div>
+      <% end %>
+
+      <hr />
+      <h4>Regenerate text - adjust model params</h4>
+      <form action='/lies/new' method='get'>
+        <div class="form-group">
+          <label for="model_order">Model Order</label>
+          <select name='model_order'>
+            <% Trump.model_orders.each do |model_order| %>
+              <option value='<%= model_order %>' <%= 'selected' if @lie.model_order == model_order %>><%= model_order %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="sentences">Sentences</label>
+          <input type="number" id="sentences" name="sentences" value="3"/>
+        </div>
+        <div>
+          <input type="submit" value="Regenerate Text" class="btn-secondary">
+        </div>
+      </form>
+      <%= link_to 'Back', lies_path %>
+    </div>
+    <div class="col-4">
+      <h3>Inspired by</h3>
+      <div class="overflow-auto" style="max-height: 500px;" >
+      <% @reference_texts.each do |reference_text| %>
+        <div class="card">
+          <div class="card-body">
+            <%= reference_text %>
+          </div>
+        </div>
+      <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>

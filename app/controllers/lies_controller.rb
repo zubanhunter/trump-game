@@ -14,7 +14,12 @@ class LiesController < ApplicationController
 
   # GET /lies/new
   def new
-    @lie = Lie.new
+    order = params[:model_order]&.to_i || 2
+    sentences = params[:sentences]&.to_i || 3
+    puts "Generating new Lie with order: #{order} sentences: #{sentences}."
+    text, ref_ids = Trump.get_sentences(sentences, order)
+    @lie = Lie.new(text: text.join(' '), model_order: order, model_version: Trump.model_version)
+    @reference_texts = Trump.sample_ref_texts(ref_ids.uniq)
   end
 
   # GET /lies/1/edit
@@ -28,7 +33,7 @@ class LiesController < ApplicationController
 
     respond_to do |format|
       if @lie.save
-        format.html { redirect_to @lie, notice: 'Lie was successfully created.' }
+        format.html { redirect_to action: 'index', notice: 'Lie was successfully created.' }
         format.json { render :show, status: :created, location: @lie }
       else
         format.html { render :new }
